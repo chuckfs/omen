@@ -82,11 +82,21 @@ Respond ONLY with JSON. No prose outside JSON.
 
     const result = await queryHuggingFace(fullPrompt);
 
-    // HF returns an array with generated_text or something similar
-    const text =
-      result?.[0]?.generated_text ||
-      result?.generated_text ||
-      JSON.stringify(result);
+    // Normalize HuggingFace router output formats
+    let text = "";
+
+    // Log raw result for debugging in Vercel
+    console.log("HF raw result:", result);
+
+    if (Array.isArray(result) && result[0]?.generated_text) {
+      text = result[0].generated_text;
+    } else if (result.generated_text) {
+      text = result.generated_text;
+    } else if (typeof result === "string") {
+      text = result;
+    } else {
+      text = JSON.stringify(result);
+    }
 
     // Parse the JSON from the model output
     const jsonStart = text.indexOf("{");
