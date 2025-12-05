@@ -7,8 +7,7 @@ if (!HF_API_KEY) {
 }
 
 // Replace this with Mistral 7B endpoint:
-const HF_MODEL =
-  "https://router.huggingface.co/mistralai/Mistral-7B-Instruct-v0.3";
+const HF_MODEL = "https://router.huggingface.co/chat/completions";
 
 // Helper: Make HF API request
 async function queryHuggingFace(prompt: string) {
@@ -18,7 +17,12 @@ async function queryHuggingFace(prompt: string) {
       Authorization: `Bearer ${HF_API_KEY}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ inputs: prompt }),
+    body: JSON.stringify({
+      model: "mistralai/Mistral-7B-Instruct-v0.3",
+      messages: [
+        { role: "user", content: prompt }
+      ]
+    }),
   });
 
   if (!response.ok) {
@@ -88,12 +92,10 @@ Respond ONLY with JSON. No prose outside JSON.
     // Log raw result for debugging in Vercel
     console.log("HF raw result:", result);
 
-    if (Array.isArray(result) && result[0]?.generated_text) {
-      text = result[0].generated_text;
-    } else if (result.generated_text) {
-      text = result.generated_text;
-    } else if (typeof result === "string") {
-      text = result;
+    // HuggingFace router returns Chat Completions format
+    // expected: { choices: [ { message: { content: "..." } } ] }
+    if (result?.choices?.[0]?.message?.content) {
+      text = result.choices[0].message.content;
     } else {
       text = JSON.stringify(result);
     }
