@@ -8,7 +8,7 @@ if (!HF_API_KEY) {
 
 // Replace this with Mistral 7B endpoint:
 const HF_MODEL =
-  "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.3";
+  "https://router.huggingface.co/mistralai/Mistral-7B-Instruct-v0.3";
 
 // Helper: Make HF API request
 async function queryHuggingFace(prompt: string) {
