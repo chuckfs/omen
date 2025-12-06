@@ -7,8 +7,7 @@ if (!HF_API_KEY) {
 }
 
 // Replace this with Mistral 7B endpoint:
-const HF_MODEL = "https://router.huggingface.co/chat/completions";
-
+const HF_MODEL = "https://router.huggingface.co/v1/chat/completions";
 // Helper: Make HF API request
 async function queryHuggingFace(prompt: string) {
   const response = await fetch(HF_MODEL, {
